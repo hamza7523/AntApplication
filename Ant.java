@@ -1,121 +1,95 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.ImageObserver;
-import java.util.Arrays;
+import java.io.Serializable;
 
-public class Ant implements ActionListener {
-	public int x;
-	public int y;
-	private int width;
-	private int height;
-	private int Distance;
-	private Image image_pressed;
-	private boolean nearEnough;
-	private Image current_image;
-	private boolean alive =true;
+public class Ant extends Button implements Serializable {
 
-	Timer timer;
+    protected ImageIcon[] moving;
+    boolean alive;
+    protected int move = 5;
 
-	ImageIcon[] images;
-	int index;
-	public boolean returnAlive(){
-		return alive;
-	}
-	public void setX(int x){
-		this.x=x;
+    public Ant(int x, int y, ImageIcon[] moving, ImageIcon squished) {
+        super(x, y);
+        width = 61;
+        height = 74;
+        this.moving = moving;
+        this.squished = squished;
+        alive = true;
+        current_image = moving[0];
+    }
 
-	}
-	public void setY(int y){
-		this.y=y;
-	}
+    public Ant() {  }
 
-	public Ant(int x, int y, int width, int height, ImageIcon[] imageIcons, Image i_pressed) {
-		timer = new Timer(30, this);
-		timer.start();
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.images = imageIcons;
-		image_pressed = i_pressed;
-		System.out.println(Arrays.toString(imageIcons));
-		current_image = imageIcons[0].getImage();
-	}
+    public boolean IsClicked(int x, int y) {
+        if (x > this.x && x < this.x + width && y > this.y && y < this.y + height) {
+            pressed = true;
+            current_image = squished;
+            alive = false;
+            return true;
+        }
+        return false;
+    }
 
-	public Image GetImage() {
-		return current_image;
-	}
+    public void moveAnt() {
+        if (alive) {
+            this.y -= move;         //increasing height
+        }
+        else {
+            move = 0;               //move is 0 if dead
+        }
+    }
 
-	public Boolean IsPressed() {
-		return alive;
-	}
+    public boolean getAlive() {
+        return alive;
+    }
 
-	public void SetPressed(boolean pressed) {
-		this.alive = pressed;
-	}
+    public void paint (Graphics g, ImageObserver ob) {
+        try {
+            g.drawImage(current_image.getImage(), x, y, ob);
+        }
+        catch (Exception ex) {  }
+    }
 
-	public boolean IsClicked(int x, int y) {
-		if (x > this.x && x < this.x + width && y > this.y && y < this.y + height) {
-			alive = false;
-			current_image = image_pressed;
-			return true;
-		}
+    public int getY () {
+        return y;
+    }
 
-		return false;
-	}
-	public void move(){
-		if(alive==true){
-			this.y=this.y-20;
-		}
+    public int getX () {
+        return x;
+    }
 
-	}
+    void addX (int x) {
+        this.x += x;
+    }
 
-	public void IsNear(int x, int y) {
-		if(alive) {
-			int dX = (this.x + width / 2) - x;
-			int dY = (this.y + height / 2) - y;
-			if (dX > 0) {
-				this.x++;
-			} else if (dX < 0) {
-				this.x--;
-			}
-			if (dY > 0) {
-				this.y++;
-			} else if (dY < 0) {
-				this.y--;
-			}
+    void addY (int y) {
+        this.y += y;
+    }
 
+    //METHODS FOR SERIALIZATION
 
-			Distance = (int) Math.sqrt((Math.pow((dX), 2)) + (Math.pow((dY), 2)));
-			System.out.println(Distance);
+    public ImageIcon[] getAntIcons() {
+        return moving;
+    }
 
+    public void setMoving(ImageIcon[] moving) {
+        this.moving = moving;
+    }
 
-			if (Distance < 100) {
-				nearEnough = true;
-				this.x = this.x + 2;
-				this.y = this.y + 2;
-				return;
-			}
-		}
-	}
+    public ImageIcon[] getMoving() {
+        return moving;
+    }
 
-		public void paint (Graphics g, ImageObserver observer){
-			g.drawImage(this.current_image, this.x, this.y, observer);
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
 
+    public void setMove(int move) {
+        this.move = move;
+    }
 
-		}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (alive) {
-			current_image = images[index].getImage();
-			index++;
-			if (index >= images.length) {
-				index = 0;
-			}
-		}
-	}
+    public int getMove() {
+        return move;
+    }
 }
-
