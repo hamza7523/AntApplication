@@ -1,7 +1,11 @@
 import java.awt.EventQueue;
+import java.io.*;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 
 public class SwingTimerEx extends JFrame {
+
+    private static Board board;
 
     public SwingTimerEx() {
 
@@ -10,7 +14,8 @@ public class SwingTimerEx extends JFrame {
 
     private void initUI() {
 
-        add(new Board());
+        board = new Board();
+        add(board);
 
         setResizable(false);
         pack();
@@ -25,7 +30,7 @@ public class SwingTimerEx extends JFrame {
         EventQueue.invokeLater(() -> {
             SwingTimerEx ex = new SwingTimerEx();
             ex.setVisible(true);
-
         });
     }
+
 }
